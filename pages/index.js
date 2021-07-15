@@ -21,11 +21,34 @@ function ProfileSidebar(propriedades) {
   )
 }
 
+function ProfileRelationsBox(propriedades){
+  return (
+    <ProfileRelationsBoxWrapper>
+          <h2 className="smallTitle">
+              {propriedades.title} ({propriedades.items.length})
+          </h2>
+          <ul>
+            { /*comunidades.map((itemAtual) => {
+                return (
+                  <li key={itemAtual.id}>
+                    <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
+                     <   img src={itemAtual.image}   />  
+                      <span>{itemAtual.title}</span>
+                    </a>
+                  </li>
+                )
+              })*/} 
+            </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+}
+
+
 export default function Home() {
   const [comunidades, setComunidades] = React.useState([{
-    id: 31231231211,
+    /* id: 31231231211,
     title: 'Eu odeio acordar cedo',
-    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
+    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg', */
     id: 1234,
     title: 'Lênin de 3',
     image: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo'
@@ -35,8 +58,23 @@ export default function Home() {
   const pessoasFavoritas = [
     'ThiagoAcam',
     'yurisperandio',
-    'boleto'
+    'juunegreiros',
+    'peas',
+    'professorbossini'
   ]
+
+  
+  const [seguidores, setSeguidores] = React.useState([]);
+
+   React.useEffect(function() {
+     fetch('https://api.github.com/users/boleto/followers')
+      .then(function (respostadoservidor) {
+        return respostadoservidor.json();
+    })
+      .then(function(respostaCompleta){
+        setSeguidores(respostaCompleta);
+    })
+  }, [])
 
   return (
     <>
@@ -62,14 +100,14 @@ export default function Home() {
               e.preventDefault();
               const dadosDoForm = new FormData(e.target);
 
-              const comunidades = {
-                id: new Date().toISOString,
+              const comunidade = {
+                id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
                 image: dadosDoForm.get('image')
               }
 
 
-              const comunidadesAtualizadas = [...comunidades, 'AluraStars']
+              const comunidadesAtualizadas = [...comunidades, comunidade]
               setComunidades(comunidadesAtualizadas)
 
             }}>
@@ -102,6 +140,7 @@ export default function Home() {
 
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
+          <ProfileRelationsBox title="Seguidores" items={seguidores} />
           <ProfileRelationsBoxWrapper>
           <h2 className="smallTitle">
               Comunidades ({comunidades.length})
