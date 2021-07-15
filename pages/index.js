@@ -50,11 +50,13 @@ export default function Home() {
       id: 31231231211,
       title: 'Eu odeio acordar cedo',
       image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
+      url: 'https://www.orkut.br.com/MainCommunity?cmm=10000'
     },
     {
       id: 1234,
       title: 'Lênin de 3',
-      image: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo'
+      image: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo',
+      url: 'https://www.orkut.br.com/MainCommunity?cmm=18453'
   }]);
  
   const usuarioAleatorio = 'boleto';
@@ -90,10 +92,10 @@ export default function Home() {
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
           <Box>
             <h1 className="title">
-              Bem vindo(a) 
+              Bem vindo(a), {usuarioAleatorio}
             </h1>
 
-            <OrkutNostalgicIconSet />
+            <OrkutNostalgicIconSet fas="1" sexy="1"/>
           </Box>
 
           <Box>
@@ -130,6 +132,14 @@ export default function Home() {
                 type="text"
               />
               </div>
+              <div>
+              <input
+                placeholder="Insira o link da sua comunidade"
+                name="url"
+                aria-label="Insira o link da sua comunidade"
+                type="text"
+              />
+              </div>
 
               <button>
                 Criar comunidade
@@ -152,7 +162,7 @@ export default function Home() {
               {comunidades.map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
+                    <a href={`${itemAtual.url}`} key={itemAtual.url}>
                      <   img src={itemAtual.image}   />  
                       <span>{itemAtual.title}</span>
                     </a>
@@ -170,7 +180,7 @@ export default function Home() {
               {pessoasFavoritas.map((itemAtual) => {
                 return (
                   <li key={itemAtual}>
-                    <a href={`/users/${itemAtual}`}>
+                    <a href={`https://github.com/${itemAtual}`}>
                       <img src={`https://github.com/${itemAtual}.png`} />
                       <span>{itemAtual}</span>
                     </a>
