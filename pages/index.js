@@ -45,13 +45,16 @@ function ProfileRelationsBox(propriedades){
 
 
 export default function Home() {
-  const [comunidades, setComunidades] = React.useState([{
-    /* id: 31231231211,
-    title: 'Eu odeio acordar cedo',
-    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg', */
-    id: 1234,
-    title: 'Lênin de 3',
-    image: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo'
+  const [comunidades, setComunidades] = React.useState([
+    {
+      id: 31231231211,
+      title: 'Eu odeio acordar cedo',
+      image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
+    },
+    {
+      id: 1234,
+      title: 'Lênin de 3',
+      image: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo'
   }]);
  
   const usuarioAleatorio = 'boleto';
