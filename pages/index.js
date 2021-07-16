@@ -28,17 +28,19 @@ function ProfileRelationsBox(propriedades){
               {propriedades.title} ({propriedades.items.length})
           </h2>
           <ul>
-            { /*comunidades.map((itemAtual) => {
-                return (
-                  <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
-                     <   img src={itemAtual.image}   />  
-                      <span>{itemAtual.title}</span>
-                    </a>
-                  </li>
-                )
-              })*/} 
-            </ul>
+          {propriedades.items.slice(0, 6).map((itemAtual) => {
+          return (
+                <li key={itemAtual.id}>
+                  <a href={`https://github.com/${itemAtual.login}`}>
+                    <img src={itemAtual.avatar_url} />
+                    <span>{itemAtual.login}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+
+      {propriedades.items.length > 6 ? <a href="#">Ver mais</a> : ""}
     </ProfileRelationsBoxWrapper>
   )
 }
@@ -49,23 +51,22 @@ export default function Home() {
     {
       id: 31231231211,
       title: 'Eu odeio acordar cedo',
-      image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
+      imageUrl: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
       url: 'https://www.orkut.br.com/MainCommunity?cmm=10000'
     },
     {
       id: 1234,
       title: 'Lênin de 3',
-      image: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo',
+      imageUrl: 'https://yt3.ggpht.com/ytc/AKedOLRammDRJ_B37UUtn7YeUzQy2UeEYm4sCH6xzLAmtw=s176-c-k-c0x00ffffff-no-rj-mo',
       url: 'https://www.orkut.br.com/MainCommunity?cmm=18453'
   }]);
  
   const usuarioAleatorio = 'boleto';
   const pessoasFavoritas = [
-    'ThiagoAcam',
-    'yurisperandio',
     'juunegreiros',
     'peas',
-    'professorbossini'
+    'professorbossini',
+    'rafaballerini'
   ]
 
   
@@ -79,7 +80,37 @@ export default function Home() {
       .then(function(respostaCompleta){
         setSeguidores(respostaCompleta);
     })
+
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'ebaa570a38b4838879d7031c6e467f',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify ({
+        'query': `query {
+          allCommunities{
+            title
+            id
+            imageUrl
+            url
+            slugCreator
+          }
+        }`})
+    })
+    .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
+    .then((respostaCompleta) => {
+      const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+      console.log(comunidadesVindasDoDato)
+      setComunidades(comunidadesVindasDoDato)
+    })
+    // .then(function (response) {
+    //   return response.json()
+    // })
+
   }, [])
+
 
   return (
     <>
@@ -99,21 +130,34 @@ export default function Home() {
           </Box>
 
           <Box>
-            <h2 className="subTitle">Você que manda</h2>
+            <h2 className="subTitle">Crie sua comunidade</h2>
             <hr />
             <form onSubmit={function handleCriarComunidade(e) {
               e.preventDefault();
               const dadosDoForm = new FormData(e.target);
 
               const comunidade = {
-                id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
-                image: dadosDoForm.get('image')
+                imageUrl: dadosDoForm.get('image'),
+                url: dadosDoForm.get('url'),
+                slug_creator: usuarioAleatorio,
               }
 
+              fetch('/api/comunidades', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(comunidade)
+              })
+              .then(async (response) => {
+                const dados = await response.json();
+                //console.log(dados)
+                const comunidade = dados.registroCriado;
+                const comunidadesAtualizadas = [...comunidades, comunidade]
+                setComunidades(comunidadesAtualizadas)
+              })
 
-              const comunidadesAtualizadas = [...comunidades, comunidade]
-              setComunidades(comunidadesAtualizadas)
 
             }}>
               <div>
@@ -144,12 +188,11 @@ export default function Home() {
               <button>
                 Criar comunidade
               </button>
+
             </form>
 
-
+           
           </Box>
-
-
 
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
@@ -162,8 +205,8 @@ export default function Home() {
               {comunidades.map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={`${itemAtual.url}`} key={itemAtual.url}>
-                     <   img src={itemAtual.image}   />  
+                     <a href={`${itemAtual.url}`}>
+                      <img src={itemAtual.imageUrl} /> 
                       <span>{itemAtual.title}</span>
                     </a>
                   </li>
