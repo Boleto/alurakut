@@ -1,4 +1,6 @@
 import React from 'react'
+import nookies from 'nookies'
+import jwt from 'jsonwebtoken'
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
@@ -46,7 +48,7 @@ function ProfileRelationsBox(propriedades){
 }
 
 
-export default function Home() {
+export default function Home(props) {
   const [comunidades, setComunidades] = React.useState([
     {
       id: 31231231211,
@@ -61,7 +63,7 @@ export default function Home() {
       url: 'https://www.orkut.br.com/MainCommunity?cmm=18453'
   }]);
  
-  const usuarioAleatorio = 'boleto';
+  const usuario = props.githubUser;;
   const pessoasFavoritas = [
     'juunegreiros',
     'peas',
@@ -73,7 +75,7 @@ export default function Home() {
   const [seguidores, setSeguidores] = React.useState([]);
 
    React.useEffect(function() {
-     fetch('https://api.github.com/users/boleto/followers')
+     fetch(`https://api.github.com/users/${usuario}/followers`)
       .then(function (respostadoservidor) {
         return respostadoservidor.json();
     })
@@ -102,7 +104,7 @@ export default function Home() {
     .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
     .then((respostaCompleta) => {
       const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
-      console.log(comunidadesVindasDoDato)
+      //console.log(comunidadesVindasDoDato)
       setComunidades(comunidadesVindasDoDato)
     })
     // .then(function (response) {
@@ -118,12 +120,12 @@ export default function Home() {
       <MainGrid>
         {/* <Box style="grid-area: profileArea;"> */}
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-          <ProfileSidebar githubUser={usuarioAleatorio} />
+          <ProfileSidebar githubUser={usuario} />
         </div>
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
           <Box>
             <h1 className="title">
-              Bem vindo(a), {usuarioAleatorio}
+              Bem vindo(a), {usuario}
             </h1>
 
             <OrkutNostalgicIconSet fas="1" sexy="1"/>
@@ -140,7 +142,7 @@ export default function Home() {
                 title: dadosDoForm.get('title'),
                 imageUrl: dadosDoForm.get('image'),
                 url: dadosDoForm.get('url'),
-                slug_creator: usuarioAleatorio,
+                slug_creator: usuario,
               }
 
               fetch('/api/comunidades', {
@@ -236,4 +238,33 @@ export default function Home() {
       </MainGrid>
     </>
   )
+}
+
+export async function getServerSideProps(context){
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN;
+  const { isAuthenticated } = await fetch('https://alurakut.vercel.app/api/auth', {
+    headers: {
+        Authorization: token
+      }
+  })
+  .then((resposta) => resposta.json())
+
+  if(!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+
+  const {githubUser} = jwt.decode(token)
+
+  return {
+    props: {
+      githubUser
+    }
+  }
 }
