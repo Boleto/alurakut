@@ -19,7 +19,7 @@
     "datocms-client": "^3.4.11"
   },
   "engines": {
-    "node": "16.x"
+    "node": "20.x"
   },
   "license": "MIT"
 }
