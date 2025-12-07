@@ -1,19 +1,1 @@
-{
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs16.x"
-    },
-    "index.js": {
-      "runtime": "nodejs16.x"
-    }
-  },
-  "build": {
-    "env": {
-      "NODE_VERSION": "16"
-    }
-  },
-  "env": {
-    "NODE_VERSION": "16"
-  }
-}
 
